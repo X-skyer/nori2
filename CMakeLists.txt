@@ -78,6 +78,7 @@ add_executable(nori
   src/object.cpp
   src/parser.cpp
   src/perspective.cpp
+  src/pointlight.cpp
   src/proplist.cpp
   src/render.cpp
   src/rfilter.cpp
