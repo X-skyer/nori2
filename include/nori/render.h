@@ -32,7 +32,7 @@ public:
     RenderThread(ImageBlock & block);
     ~RenderThread();
 
-    void renderScene(const std::string & filename);
+    void renderScene(const std::string & filename, bool singleThreaded);
 
     bool isBusy();
     void stopRendering();

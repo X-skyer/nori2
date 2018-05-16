@@ -200,7 +200,7 @@ bool NoriScreen::keyboardEvent(int key, int scancode, int action, int modifiers)
     return nanogui::Screen::keyboardEvent(key,scancode,action,modifiers);
 }
 
-void NoriScreen::openXML(const std::string &filename) {
+void NoriScreen::openXML(const std::string &filename, bool singleThreaded) {
 
     if(m_renderThread.isBusy()) {
         cerr << "Error: rendering in progress, you need to wait until it's done" << endl;
@@ -209,7 +209,7 @@ void NoriScreen::openXML(const std::string &filename) {
 
     try {
 
-        m_renderThread.renderScene(filename);
+        m_renderThread.renderScene(filename, singleThreaded);
 
         m_block.lock();
         Vector2i bsize = m_block.getSize();

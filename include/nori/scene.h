@@ -139,6 +139,8 @@ private:
     Sampler *m_sampler = nullptr;
     Camera *m_camera = nullptr;
     BVH *m_bvh = nullptr;
+    int m_primitiveIds;                     // we keep a running track of primitive ids
+    int m_objectIds;                        // running track of different objects
 
 };
 

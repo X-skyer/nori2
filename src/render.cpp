@@ -94,8 +94,9 @@ static void renderBlock(const Scene *scene, Sampler *sampler, ImageBlock &block)
             Point2f apertureSample = sampler->next2D();
 
             /* Sample a ray from the camera */
-            Ray3f ray;
-            Color3f value = camera->sampleRay(ray, pixelSample, apertureSample);
+            //Ray3f ray;
+            RayDifferential ray;
+            Color3f value = camera->sampleRayDifferential(ray, pixelSample, apertureSample);
 
             /* Compute the incident radiance */
             if (enablePixelDebugging) {
@@ -114,7 +115,7 @@ static void renderBlock(const Scene *scene, Sampler *sampler, ImageBlock &block)
     }
 }
 
-void RenderThread::renderScene(const std::string & filename) {
+void RenderThread::renderScene(const std::string & filename, bool singleThreaded) {
 
     filesystem::path path(filename);
 
@@ -122,6 +123,8 @@ void RenderThread::renderScene(const std::string & filename) {
        file resolver. That way, the XML file can reference
        resources (OBJ files, textures) using relative paths */
     getFileResolver()->prepend(path.parent_path());
+
+    singleThreaded = false;
 
     NoriObject* root = loadFromXML(filename);
 
@@ -145,7 +148,7 @@ void RenderThread::renderScene(const std::string & filename) {
 
         /* Do the following in parallel and asynchronously */
         m_render_status = 1;
-        m_render_thread = std::thread([this,outputName] {
+        m_render_thread = std::thread([this,outputName, singleThreaded] {
             const Camera *camera = m_scene->getCamera();
             Vector2i outputSize = camera->getOutputSize();
 
@@ -195,10 +198,11 @@ void RenderThread::renderScene(const std::string & filename) {
                 };
 
                 /// Uncomment the following line for single threaded rendering
-                map(range);
+                if(singleThreaded)
+                    map(range);
 
                 /// Default: parallel rendering
-                //tbb::parallel_for(range, map);
+                else tbb::parallel_for(range, map);
 
                 blockGenerator.reset();
             }

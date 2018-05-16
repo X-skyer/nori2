@@ -61,7 +61,7 @@ public:
 
     // Integrator function that uses ray differentials
     virtual Color3f Li(const Scene *scene, Sampler *sampler, const RayDifferential& rayDifferential) const {
-        return Color3f(0.f);
+        return Li(scene, sampler, rayDifferential.getRay());
     }
 };
 

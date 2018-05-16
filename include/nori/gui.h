@@ -35,7 +35,7 @@ public:
     virtual bool keyboardEvent(int key, int scancode, int action, int modifiers);
     virtual bool dropEvent(const std::vector<std::string> &filenames);
 
-    void openXML(const std::string & filename);
+    void openXML(const std::string & filename, bool singleThreaded = false);
     void openEXR(const std::string & filename);
 
 private:

@@ -34,17 +34,16 @@ using namespace nori;
         if (argc == 2) {
             std::string filename = argv[1];
             filesystem::path path(filename);
-
-        if (path.extension() == "xml") {
-                /* Render the XML scene file */
-                screen->openXML(filename);
-        } else if (path.extension() == "exr") {
-            /* Alternatively, provide a basic OpenEXR image viewer */
-                screen->openEXR(filename);
-        } else {
-                cerr << "Error: unknown file \"" << filename
-                 << "\", expected an extension of type .xml or .exr" << endl;
-        }
+            if (path.extension() == "xml") {
+                    /* Render the XML scene file */
+                    screen->openXML(filename);
+            } else if (path.extension() == "exr") {
+                /* Alternatively, provide a basic OpenEXR image viewer */
+                    screen->openEXR(filename);
+            } else {
+                    cerr << "Error: unknown file \"" << filename
+                     << "\", expected an extension of type .xml or .exr" << endl;
+            }
         }
 
         nanogui::mainloop();

@@ -27,6 +27,8 @@ NORI_NAMESPACE_BEGIN
 
 Scene::Scene(const PropertyList &) {
     m_bvh = new BVH();
+    m_primitiveIds = -1;
+    m_objectIds = -1;
 }
 
 Scene::~Scene() {

@@ -444,6 +444,7 @@ bool BVH::rayIntersect(const Ray3f &_ray, Intersection &its, bool shadowRay) con
                     ray.maxt = its.t = t;
                     its.uv = Point2f(u, v);
                     its.mesh = mesh;
+                    its.m_primitiveId = idx;
                     f = idx;
                 }
             }

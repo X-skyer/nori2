@@ -23,10 +23,16 @@ public:
 
     // Core integrator function
     virtual Color3f Li(const Scene *scene, Sampler *sampler, const Ray3f &ray) const {
+        return 0.f;
+    }
+
+    // Integrator function that uses ray differentials
+    virtual Color3f Li(const Scene *scene, Sampler *sampler, const RayDifferential& ray) const {
         Intersection its;
         if (!scene->rayIntersect(ray, its)) {
-            return Color3f(0.f);
-        } else {
+            return Color3f(1.f);
+        }
+        else {
             const BSDF* currBSDF = its.mesh->getBSDF();
             if (currBSDF != nullptr) {
                 // create the emitter query record and sample a light source
@@ -51,16 +57,32 @@ public:
                     // compute other terms and the final color
                     const float cosTheta = std::abs(Frame::cosTheta(wi));
                     Color3f L = Li * f * cosTheta * vis;
-                    return L;
+                    
+                    // Compute the edge color
+                    std::unique_ptr<Intersection> stencilHits(new Intersection[ray.m_totalStencilRays]);
+                    for (int rd = 0; rd < ray.m_totalStencilRays; rd++) {
+                        scene->rayIntersect(ray.getStencilRay(rd), stencilHits.get()[rd]);
+                    }
+
+                    // count m
+                    int m = 0;
+                    const Mesh* gS = its.mesh;
+                    for (int i = 0; i < ray.m_totalStencilRays; i++) {
+                        const Mesh* gR = stencilHits.get()[i].mesh;
+                        if (gR != gS)
+                            m++;
+                    }
+
+                    // compute the edge metric
+                    float constant = 0.5f * ray.m_totalStencilRays;
+                    float edgeStrength = 1.0f - std::abs(m - constant) / constant;
+
+                    // lerp between L and edge strength
+                    return (1.0f - edgeStrength) * L + edgeStrength * Color3f(0.f);
                 }
             }
+            return Color3f(1.f);
         }
-        return 0.f;
-    }
-
-    // Integrator function that uses ray differentials
-    virtual Color3f Li(const Scene *scene, Sampler *sampler, const RayDifferential& rayDifferential) const {
-        return Color3f(0.f);
     }
 };
 
