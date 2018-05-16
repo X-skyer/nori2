@@ -81,8 +81,16 @@ static void renderBlock(const Scene *scene, Sampler *sampler, ImageBlock &block)
 
     /* For each pixel and pixel sample sample */
     for (int y=0; y<size.y(); ++y) {
-        for (int x=0; x<size.x(); ++x) {
-            Point2f pixelSample = Point2f((float) (x + offset.x()), (float) (y + offset.y())) + sampler->next2D();
+        for (int x = 0; x < size.x(); ++x) {
+
+            // CODE FOR DEBUGGING PURPOSES
+            bool enablePixelDebugging = false;
+            Point2i pixelCoords(x + offset.x(), y + offset.y());
+            Point2i debugCoords(380, 410);
+            //-------------------------------//
+            
+            // Create the actual sample
+            Point2f pixelSample = Point2f((float)(x + offset.x()), (float)(y + offset.y())) + sampler->next2D();
             Point2f apertureSample = sampler->next2D();
 
             /* Sample a ray from the camera */
@@ -90,7 +98,15 @@ static void renderBlock(const Scene *scene, Sampler *sampler, ImageBlock &block)
             Color3f value = camera->sampleRay(ray, pixelSample, apertureSample);
 
             /* Compute the incident radiance */
-            value *= integrator->Li(scene, sampler, ray);
+            if (enablePixelDebugging) {
+                if (debugCoords.x() == pixelCoords.x() && debugCoords.y() == pixelCoords.y()) {
+                    value *= integrator->Li(scene, sampler, ray);
+                } else {
+                    value = 0.f;
+                }
+            } else {
+                value *= integrator->Li(scene, sampler, ray);
+            }
 
             /* Store in the image block */
             block.put(pixelSample, value);
@@ -179,10 +195,10 @@ void RenderThread::renderScene(const std::string & filename) {
                 };
 
                 /// Uncomment the following line for single threaded rendering
-                //map(range);
+                map(range);
 
                 /// Default: parallel rendering
-                tbb::parallel_for(range, map);
+                //tbb::parallel_for(range, map);
 
                 blockGenerator.reset();
             }

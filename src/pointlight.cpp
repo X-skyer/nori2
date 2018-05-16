@@ -31,7 +31,7 @@ public:
         lRec.emitter = this;
         lRec.p = m_position;
         lRec.dist = (m_position - lRec.ref).norm();
-        lRec.wi = (m_position - lRec.ref);              // wi is always chosen from reference point
+        lRec.wi = (m_position - lRec.ref).normalized();   // wi is always chosen from reference point
         lRec.pdf = 1.0f;                                // explicitly sampling - delta pdf
         lRec.n = -lRec.wi.normalized();                 // the normal direction is the reverse direction of wi
 

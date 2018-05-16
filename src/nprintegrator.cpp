@@ -34,20 +34,23 @@ public:
                 EmitterQueryRecord eRec;
                 const Emitter* light = scene->getLights()[0];
                 if (light != nullptr) {
+                    // Sample the light source
                     eRec.ref = its.p;
                     Color3f Li = light->sample(eRec, sampler->next2D());
 
-                    // compute the contribution
-                    BSDFQueryRecord bRec(its.shFrame.toLocal(eRec.wi.normalized()), 
-                        its.shFrame.toLocal(-ray.d.normalized()), ESolidAngle);
+                    // compute the bsdf contribution
+                    const Vector3f wo = its.shFrame.toLocal(-ray.d.normalized());
+                    const Vector3f wi = its.shFrame.toLocal(eRec.wi);
+                    BSDFQueryRecord bRec(wo, wi, ESolidAngle);
+                    const Color3f f = currBSDF->eval(bRec);
 
                     // Compute visibility;
                     Ray3f shadowRay(its.p, eRec.wi, Epsilon, (1.0f - Epsilon) * eRec.dist);
                     const float vis = scene->rayIntersect(shadowRay) ? 0.f : 1.f;
-                    
-                    // compute other terms
-                    const float cosTheta = std::max(Frame::cosTheta(its.shFrame.toLocal(eRec.wi.normalized())), 0.f);
-                    Color3f L = vis *  currBSDF->eval(bRec) * Li * cosTheta ;
+
+                    // compute other terms and the final color
+                    const float cosTheta = std::abs(Frame::cosTheta(wi));
+                    Color3f L = Li * f * cosTheta * vis;
                     return L;
                 }
             }
