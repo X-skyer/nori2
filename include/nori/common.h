@@ -72,6 +72,7 @@ NORI_NAMESPACE_BEGIN
 template <typename Scalar, int Dimension>  struct TVector;
 template <typename Scalar, int Dimension>  struct TPoint;
 template <typename Point, typename Vector> struct TRay;
+template <typename Point, typename Vector> struct TRayDifferential;
 template <typename Point>                  struct TBoundingBox;
 
 /* Basic Nori data structures (vectors, points, rays, bounding boxes,
@@ -116,6 +117,7 @@ typedef TBoundingBox<Point3i>   BoundingBox3i;
 typedef TBoundingBox<Point4i>   BoundingBox4i;
 typedef TRay<Point2f, Vector2f> Ray2f;
 typedef TRay<Point3f, Vector3f> Ray3f;
+typedef TRayDifferential<Point3f, Vector3f> RayDifferential;
 
 /// Some more forward declarations
 class BSDF;

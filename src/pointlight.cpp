@@ -37,7 +37,7 @@ public:
 
         // Radiance is returned from sample
         // Radiance of the point light phi/(4*pi*r2)
-        return m_power * INV_FOURPI * lRec.dist * lRec.dist;
+        return m_power * INV_FOURPI * (1.0f / (lRec.dist * lRec.dist));
     }
 
     // The pdf of choosing a point light is zero always.
@@ -54,4 +54,5 @@ private:
     Vector3f m_position;
 };
 
+NORI_REGISTER_CLASS(PointLight, "point");
 NORI_NAMESPACE_END

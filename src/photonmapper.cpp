@@ -94,6 +94,10 @@ public:
 		return CHANGEME;
     }
 
+    virtual Color3f Li(const Scene *scene, Sampler *sampler, const RayDifferential& rayDifferential) const {
+        return 0.f;
+    }
+
     virtual std::string toString() const {
         return tfm::format(
             "PhotonMapper[\n"

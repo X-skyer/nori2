@@ -110,6 +110,15 @@ public:
         return Color3f(1.0f);
     }
 
+    virtual Color3f sampleRayDifferential(RayDifferential& ray,
+        const Point2f &samplePosition,
+        const Point2f &apertureSample,
+        int quality) const {
+
+        return Color3f(0.f);
+    }
+
+
     virtual void addChild(NoriObject *obj) {
         switch (obj->getClassType()) {
             case EReconstructionFilter:

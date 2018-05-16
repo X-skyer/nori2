@@ -20,6 +20,7 @@
 #define __NORI_RAY_H
 
 #include <nori/vector.h>
+#include <memory>
 
 NORI_NAMESPACE_BEGIN
 
@@ -97,6 +98,33 @@ template <typename _PointType, typename _VectorType> struct TRay {
                 "  maxt = %f\n"
                 "]", o.toString(), d.toString(), mint, maxt);
     }
+};
+
+
+template<typename _PointType, typename _VectorType> struct TRayDifferential 
+    : public TRay<_PointType, _VectorType>
+{
+    typedef _PointType                  PointType;
+    typedef _VectorType                 VectorType;
+    typedef typename PointType::Scalar  Scalar;
+
+    TRayDifferential(int quality) : TRay()
+    {
+        m_quality = quality;
+        m_stencilRays = std::shared_ptr<>(new TRay<_PointType, _VectorType>[m_quality]);
+    }
+
+    TRayDifferential(const PointType &o, const VectorType &d) : TRay(o, d) {}
+    TRayDifferential(const TRay &ray) : TRay(ray) {}
+    TRayDifferential(const TRay &ray, Scalar mint, Scalar maxt) : TRay(ray, mint, maxt) {}
+    TRay getRay() const { return TRay(o, d, mint, maxt); }
+
+    // We have an additional circle stencil of rays
+    // each circle has 8 rays
+    // so total number of rays is 8 * n(n+1)/2
+    // plus the additional central ray
+    std::shared_ptr<TRay<_PointType, _VectorType>> m_stencilRays;
+    int m_quality;
 };
 
 NORI_NAMESPACE_END

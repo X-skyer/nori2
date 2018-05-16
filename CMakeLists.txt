@@ -74,9 +74,12 @@ add_executable(nori
   src/independent.cpp
   src/main.cpp
   src/mesh.cpp
+  src/nprbsdf.cpp
+  src/nprintegrator.cpp
   src/obj.cpp
   src/object.cpp
   src/parser.cpp
+  src/pathintegrator.cpp
   src/perspective.cpp
   src/pointlight.cpp
   src/proplist.cpp
