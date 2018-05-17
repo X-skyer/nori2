@@ -46,6 +46,7 @@ private:
     uint32_t m_texture = 0;
     float m_scale = 1.f;
     Widget *panel = nullptr;
+    bool m_singleThreaded;
 
     RenderThread m_renderThread;
 };

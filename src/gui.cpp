@@ -27,6 +27,7 @@
 #include <nanogui/layout.h>
 #include <nanogui/entypo.h>
 #include <nanogui/progressbar.h>
+#include <nanogui/checkbox.h>
 
 #include <filesystem/resolver.h>
 
@@ -36,7 +37,7 @@ NORI_NAMESPACE_BEGIN
 
 NoriScreen::NoriScreen(ImageBlock &block)
  : nanogui::Screen(block.getSize() + Vector2i(0, PANEL_HEIGHT), "Nori", false),
-   m_block(block), m_renderThread(m_block)
+   m_block(block), m_renderThread(m_block), m_singleThreaded(false)
 {
     using namespace nanogui;
 
@@ -71,7 +72,8 @@ NoriScreen::NoriScreen(ImageBlock &block)
             m_scale = std::pow(2.f, (value - 0.5f) * 20);
         }
     );
-
+    CheckBox* checkboxSingleThreaded = new CheckBox(panel, "single threaded", [this](bool state) { m_singleThreaded = state; });
+    
     panel->setSize(block.getSize());
     performLayout(mNVGContext);
 
@@ -209,7 +211,7 @@ void NoriScreen::openXML(const std::string &filename, bool singleThreaded) {
 
     try {
 
-        m_renderThread.renderScene(filename, singleThreaded);
+        m_renderThread.renderScene(filename, m_singleThreaded);
 
         m_block.lock();
         Vector2i bsize = m_block.getSize();

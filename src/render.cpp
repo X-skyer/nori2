@@ -124,7 +124,7 @@ void RenderThread::renderScene(const std::string & filename, bool singleThreaded
        resources (OBJ files, textures) using relative paths */
     getFileResolver()->prepend(path.parent_path());
 
-    singleThreaded = false;
+    cout << "Single Threaded? : " << singleThreaded << std::endl;
 
     NoriObject* root = loadFromXML(filename);
 

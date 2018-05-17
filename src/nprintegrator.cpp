@@ -11,6 +11,7 @@ class NprIntegrator : public Integrator
 public:
     // Constructor
     NprIntegrator(const PropertyList& props) {
+        m_threshCrease = props.getFloat("crease", 0.f);
     }
 
     // Required method to hookup the class to nori
@@ -73,6 +74,32 @@ public:
                             m++;
                     }
 
+                    // check if m == 0
+                    // we can shade crease edges
+                    if (m == 0) {
+                        // we need the 0th, 2nd, 4th, 6th intersections and their surface normals
+                        const Normal3f& n0 = stencilHits.get()[0].geoFrame.n;
+                        const Normal3f& n1 = stencilHits.get()[1].geoFrame.n;
+                        const Normal3f& n2 = stencilHits.get()[2].geoFrame.n;
+                        const Normal3f& n3 = stencilHits.get()[3].geoFrame.n;
+                        const Normal3f& n4 = stencilHits.get()[4].geoFrame.n;
+                        const Normal3f& n5 = stencilHits.get()[5].geoFrame.n;
+                        const Normal3f& n6 = stencilHits.get()[6].geoFrame.n;
+                        const Normal3f& n7 = stencilHits.get()[7].geoFrame.n;
+                        // m == 0 only when all the intersections are actually valid
+
+                        // front and sideways
+                        float dot1 = n0.dot(n4);
+                        float dot2 = n1.dot(n5);
+                        float dot3 = n2.dot(n6);
+                        float dot4 = n3.dot(n7);
+                        
+                        if (abs(dot1) > m_threshCrease) m += 2;
+                        if (abs(dot2) > m_threshCrease) m += 2;
+                        if (abs(dot3) > m_threshCrease) m += 2;
+                        if (abs(dot4) > m_threshCrease) m += 2;
+                    }
+
                     // compute the edge metric
                     float constant = 0.5f * ray.m_totalStencilRays;
                     float edgeStrength = 1.0f - std::abs(m - constant) / constant;
@@ -84,6 +111,9 @@ public:
             return Color3f(1.f);
         }
     }
+
+private:
+    float m_threshCrease;
 };
 
 NORI_REGISTER_CLASS(NprIntegrator, "npr")
