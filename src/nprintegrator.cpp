@@ -94,10 +94,10 @@ public:
                         float dot3 = n2.dot(n6);
                         float dot4 = n3.dot(n7);
                         
-                        if (abs(dot1) > m_threshCrease) m += 2;
-                        if (abs(dot2) > m_threshCrease) m += 2;
-                        if (abs(dot3) > m_threshCrease) m += 2;
-                        if (abs(dot4) > m_threshCrease) m += 2;
+                        if (abs(dot1) < m_threshCrease) m += 4;
+                        else if (abs(dot2) < m_threshCrease) m += 4;
+                        else if (abs(dot3) < m_threshCrease) m += 4;
+                        else if (abs(dot4) < m_threshCrease) m += 4;
                     }
 
                     // compute the edge metric
