@@ -313,4 +313,25 @@ float fresnel(float cosThetaI, float extIOR, float intIOR) {
     return (Rs * Rs + Rp * Rp) / 2.0f;
 }
 
+bool raySphereIntersection(const Ray3f& ray, const Vector3f& c, const float r, float* t1, float* t2) {
+    const Vector3f OC = ray.o - c;
+    const float A = ray.d.dot(ray.d);
+    const float B = 2.f * ray.d.dot(OC);
+    const float C = OC.dot(OC) - r * r;
+    const float factor = B * B - 4.f * A * C;
+    if (factor < 0.f) return false;
+    else {
+        const float determinant = sqrtf(factor);
+        const float _t1 = (-B - determinant) / (2.f * A);
+        const float _t2 = (-B + determinant) / (2.f * A);        
+        if (t1 != nullptr) *t1 = _t1;
+        if (t2 != nullptr) *t2 = _t2;
+        return true;
+    }
+}
+
+bool raySphereIntersection(const Ray3f& ray, const Vector3f& c, const float r) {
+    return raySphereIntersection(ray, c, r, nullptr, nullptr);
+}
+
 NORI_NAMESPACE_END

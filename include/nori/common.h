@@ -273,6 +273,11 @@ extern float fresnel(float cosThetaI, float extIOR, float intIOR);
  */
 extern filesystem::resolver *getFileResolver();
 
+// Computes the ray-sphere intersection
+bool raySphereIntersection(const Ray3f& ray, const Vector3f& c, const float r, float* t1, float* t2);
+
+bool raySphereIntersection(const Ray3f& ray, const Vector3f& c, const float r);
+
 NORI_NAMESPACE_END
 
 #endif /* __NORI_COMMON_H */
